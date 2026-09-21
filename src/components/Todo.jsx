@@ -21,12 +21,15 @@ function Todo(props) {
     setNewName(event.target.value);
   }
 
-  // NOTE: As written, this function has a bug: it doesn't prevent the user
-  // from submitting an empty form. This is left as an exercise for developers
-  // working through MDN's React tutorial.
   function handleSubmit(event) {
     event.preventDefault();
-    props.editTask(props.id, newName);
+    const trimmedName = newName.trim();
+
+    if (!trimmedName) {
+      return;
+    }
+
+    props.editTask(props.id, trimmedName);
     setNewName("");
     setEditing(false);
   }
@@ -68,7 +71,7 @@ function Todo(props) {
         <input
           id={props.id}
           type="checkbox"
-          defaultChecked={props.completed}
+          checked={props.completed}
           onChange={() => props.toggleTaskCompleted(props.id)}
         />
         <label className="todo-label" htmlFor={props.id}>
