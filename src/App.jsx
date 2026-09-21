@@ -4,6 +4,8 @@ import FilterButton from "./components/FilterButton";
 import Todo from "./components/Todo";
 import { nanoid } from "nanoid";
 
+const STORAGE_KEY = "tasks";
+
 function usePrevious(value) {
   const ref = useRef(null);
   useEffect(() => {
@@ -21,8 +23,15 @@ const FILTER_MAP = {
 const FILTER_NAMES = Object.keys(FILTER_MAP);
 
 function App(props) {
-  const [tasks, setTasks] = useState(props.tasks);
+  const [tasks, setTasks] = useState(() => {
+    const storedTasks = localStorage.getItem(STORAGE_KEY);
+    return storedTasks ? JSON.parse(storedTasks) : props.tasks;
+  });
   const [filter, setFilter] = useState("All");
+
+  useEffect(() => {
+    localStorage.setItem(STORAGE_KEY, JSON.stringify(tasks));
+  }, [tasks]);
 
   function toggleTaskCompleted(id) {
     const updatedTasks = tasks.map((task) => {
